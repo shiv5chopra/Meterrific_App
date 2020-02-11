@@ -3,11 +3,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'home', loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)},
-  {
-    path: 'hihi',
-    loadChildren: () => import('./hihi/hihi.module').then( m => m.HihiPageModule)
-  },
+
   {
     path: 'login',
     loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
@@ -33,9 +29,14 @@ const routes: Routes = [
     loadChildren: () => import('./transaction-history/transaction-history.module').then( m => m.TransactionHistoryPageModule)
   },
   {
-    path: 'create-account',
-    loadChildren: () => import('./create-account/create-account.module').then( m => m.CreateAccountPageModule)
+    path: 'register',
+    loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
   },
+  {
+    path: 'dashboard',
+    loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
+  },
+
   //{ path: "hihi", loadChildren: './hihi/hihi.module#HihiModule'},
 ];
 
