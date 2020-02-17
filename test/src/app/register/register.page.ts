@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavController } from '@ionic/angular';
+import { AngularFireDatabase } from '@angular/fire/database';
  
 @Component({
   selector: 'app-register',
@@ -29,7 +30,8 @@ export class RegisterPage implements OnInit {
   constructor(
     private navCtrl: NavController,
     private authService: AuthenticationService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private afDatabase : AngularFireDatabase
   ) {}
  
   ngOnInit(){
@@ -51,11 +53,15 @@ export class RegisterPage implements OnInit {
        console.log(res);
        this.errorMessage = "";
        this.successMessage = "Your account has been created. Please log in.";
+       this.afDatabase.object(this.authService.userDetails().uid).update({
+        "userType" : "notAdmin"
+      })
      }, err => {
        console.log(err);
        this.errorMessage = err.message;
        this.successMessage = "";
      })
+
   }
  
   goLoginPage(){
