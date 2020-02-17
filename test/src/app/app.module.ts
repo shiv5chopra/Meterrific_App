@@ -17,6 +17,7 @@ import {AngularFireModule} from '@angular/fire';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { Geolocation } from "@ionic-native/geolocation/ngx"
 import { GoogleMaps } from "@ionic-native/google-maps"
 
 import * as firebase from 'firebase';
@@ -37,6 +38,7 @@ import * as firebase from 'firebase';
   providers: [
     StatusBar,
     SplashScreen,
+    Geolocation,
     GoogleMaps,
     AuthenticationService,
     AngularFireDatabase,
