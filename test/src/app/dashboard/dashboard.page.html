@@ -19,9 +19,22 @@
     </ion-row>
   </ion-grid>
 
-  <ion-button (click) = goToNavigationPage()>Navigation</ion-button>
-  
-  
+  <ion-row>
+    <ion-col text-center>
+      <ion-button class= "round" (click)="goToNavigationPage()">Navigation</ion-button>
+    </ion-col>
+  </ion-row>
+  <ion-row style="height: h"></ion-row>
+
+  <div *ngIf="admin == 'admin'">
+  <ion-row>
+    <ion-col text-center>
+      <ion-button class= "round" (click)="goToAddMetersPage()">Add Meters</ion-button>
+    </ion-col>
+  </ion-row>
+  <ion-row style="height: h"></ion-row>
+  </div>
+
 </ion-content>
 <ion-footer (click)="logout()">
   <ion-toolbar color="secondary">

@@ -31,6 +31,7 @@ import * as firebase from 'firebase';
     AppRoutingModule,
     AngularFireAuthModule,
     ReactiveFormsModule,
+    FormsModule,
     AngularFireModule.initializeApp(environment.firebase)
   ],
   providers: [

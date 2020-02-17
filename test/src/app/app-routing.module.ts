@@ -36,6 +36,10 @@ const routes: Routes = [
     path: 'dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
   },
+  {
+    path: 'add-meters',
+    loadChildren: () => import('./add-meters/add-meters.module').then( m => m.AddMetersPageModule)
+  },
 
   //{ path: "hihi", loadChildren: './hihi/hihi.module#HihiModule'},
 ];
