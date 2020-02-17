@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Platform } from '@ionic/angular';
+import { GoogleMaps, GoogleMap } from '@ionic-native/google-maps/ngx'
 
 @Component({
   selector: 'app-navigation',
@@ -7,9 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavigationPage implements OnInit {
 
-  constructor() { }
+  map: GoogleMap;
 
-  ngOnInit() {
+  constructor(private platform:Platform) {}
+
+  async ngOnInit() {
+    await this.platform.ready();
+    await this.loadMap();
+  }
+
+  loadMap() {
+    this.map = GoogleMaps.create('map_canvas');
   }
 
 }

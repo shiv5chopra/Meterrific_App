@@ -15,6 +15,8 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
  
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { GoogleMaps } from "@ionic-native/google-maps"
+
 import * as firebase from 'firebase';
 firebase.initializeApp(environment.firebase);
 
@@ -31,6 +33,7 @@ firebase.initializeApp(environment.firebase);
   providers: [
     StatusBar,
     SplashScreen,
+    GoogleMaps,
     AuthenticationService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
