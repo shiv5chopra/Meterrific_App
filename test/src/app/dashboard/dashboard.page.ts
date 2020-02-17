@@ -36,4 +36,8 @@ export class DashboardPage implements OnInit {
       console.log(error);
     })
   }
+
+  goToNavigationPage() {
+    this.navCtrl.navigateForward('/navigation')
+  }
 }
