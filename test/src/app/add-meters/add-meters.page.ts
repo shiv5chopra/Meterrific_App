@@ -20,8 +20,11 @@ export class AddMetersPage implements OnInit {
     'name': [
       { type: 'required', message: 'Name is required.' },
     ],
-    'location': [
-      { type: 'required', message: 'Location is required.' },
+    'latitude': [
+      { type: 'required', message: 'Latitude is required.' },
+    ],
+    'longitude': [
+      { type: 'required', message: 'Longitude is required.' },
     ]
   };
 
@@ -37,23 +40,36 @@ export class AddMetersPage implements OnInit {
       name: new FormControl('', Validators.compose([
         Validators.required,
       ])),
-      location: new FormControl('', Validators.compose([
+      latitude: new FormControl('', Validators.compose([
+        Validators.required
+      ])),
+      longitude: new FormControl('', Validators.compose([
         Validators.required
       ])),
     });
   }
 
   sendMeter() {
-    this.afDatabase.object("/meters/" + this.validations_form.get("name").value).update({
-      "location" : this.validations_form.get("location").value
+
+    this.afDatabase.database.ref("/meters/").push({
+      "name" : this.validations_form.get("name").value,
+      "latitude" : this.validations_form.get("latitude").value,
+      "longitude" : this.validations_form.get("longitude").value
     })
+    // this.afDatabase.object("/meters/" + this.validations_form.get("name").value).push({
+    //   "latitude" : this.validations_form.get("latitude").value,
+    //   "longitude" : this.validations_form.get("longitude").value
+    // })
     this.presentAlert()
   }
 
   async presentAlert() {
     const alert = await this.alertController.create({
       header: 'Meter Sent',
-      subHeader: 'Meter with location: ' + this.validations_form.get("location").value + " sent",
+      subHeader: 'Meter with latitude: '
+          + this.validations_form.get("latitude").value
+          + " and longitude: "  + this.validations_form.get("longitude").value
+          + " sent",
       buttons: ['OK']
     });
     await alert.present();

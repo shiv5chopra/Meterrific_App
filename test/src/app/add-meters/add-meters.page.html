@@ -23,12 +23,24 @@
     </div>
  
     <ion-item>
-      <ion-label  position="floating" color="primary">Location</ion-label>
-      <ion-input type="text" formControlName="location" class="form-controll" required></ion-input>
+      <ion-label  position="floating" color="primary">Latitude</ion-label>
+      <ion-input type="text" formControlName="latitude" class="form-controll" required></ion-input>
     </ion-item>
     <div class="validation-errors">
-      <ng-container *ngFor="let validation of validation_messages.location">
-        <div class="error-message" *ngIf="validations_form.get('location').hasError(validation.type) && (validations_form.get('location').dirty || validations_form.get('location').touched)">
+      <ng-container *ngFor="let validation of validation_messages.latitude">
+        <div class="error-message" *ngIf="validations_form.get('latitude').hasError(validation.type) && (validations_form.get('latitude').dirty || validations_form.get('latitude').touched)">
+          {{ validation.message }}
+        </div>
+      </ng-container>
+    </div>
+
+    <ion-item>
+      <ion-label  position="floating" color="primary">Longitude</ion-label>
+      <ion-input type="text" formControlName="longitude" class="form-controll" required></ion-input>
+    </ion-item>
+    <div class="validation-errors">
+      <ng-container *ngFor="let validation of validation_messages.longitude">
+        <div class="error-message" *ngIf="validations_form.get('longitude').hasError(validation.type) && (validations_form.get('longitude').dirty || validations_form.get('longitude').touched)">
           {{ validation.message }}
         </div>
       </ng-container>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { GoogleMaps, Geocoder, BaseArrayClass, Marker, GeocoderResult, GoogleMap, GoogleMapOptions,GoogleMapsEvent } from '@ionic-native/google-maps/ngx'
+import { GoogleMaps, BaseArrayClass, Marker, GoogleMap, GoogleMapOptions,GoogleMapsEvent } from '@ionic-native/google-maps/ngx'
 import { NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx'
 
@@ -22,8 +22,7 @@ export class NavigationPage implements OnInit {
   constructor(private platform:Platform,
     private navCtrl: NavController,
     private geolocation: Geolocation,
-    private afDatabase : AngularFireDatabase,
-    private geocoder: Geocoder) {}
+    private afDatabase : AngularFireDatabase) {}
 
   async ngOnInit() {
     await this.platform.ready();
@@ -50,35 +49,61 @@ export class NavigationPage implements OnInit {
   }
     
   addMarkers() {
-    this.afDatabase.list("/meters/").valueChanges().subscribe((data) =>
-      this.list = data
-    );
-    let locations = []
-    let coords = []
-    for(let item of this.list) {
-      locations.push(item["location"])
-    }
-    this.geocoder.geocode({
-      "address" : locations
-    }).then((results: BaseArrayClass<GeocoderResult[]>) => {
-      results.forEach((coord: GeocoderResult[]) => {
+    // this.list = this.afDatabase.database.ref("/meters/").toJSON()
+    this.afDatabase.list("/meters/").valueChanges().subscribe((data) => {
+      for (let item of data) {
         this.map.addMarker({
-          position: coord[0].position
-        })
-      });
-    });
-    
+          title: item['name'],
+          icon: 'blue',
+          animation: 'DROP',
+          position: {
+            lat: item['latitude'],
+            lng: item['longitude']
+          }
+        }).then((marker: Marker) => {
+          
+        });
+      }
+    }
+    );
+    // console.log("here2",this.list)
+    // console.log("here3",this.list.keys())
+    // console.log("here3",this.list[0])
+    // let locations = []
+    // let coords = []
+    // for(let item of this.list) {
+    //   locations.push((item["latitude"],item["longitude"]))
+    // }
 
-    // this.map.addMarker({
-    //   title: '@ionic-native/google-maps',
-    //   icon: 'blue',
-    //   animation: 'DROP',
-    //   position: {
-    //     lat: 33.771030,
-    //     lng: -84.391090
-    //   }
-    // }).then((marker: Marker) => {
-      
+
+
+
+    // this.geocoder.geocode({
+    //   "address" : locations
+    // }).then((results: BaseArrayClass<GeocoderResult[]>) => {
+    //   results.forEach((coord: GeocoderResult[]) => {
+    //     this.map.addMarker({
+    //       position: coord[0].position
+    //     })
+    //   });
     // });
+    
+    // for(let item of this.list) {
+    //   // let item = this.list[key]
+    //   this.map.addMarker({
+    //     title: item['name'],
+    //     icon: 'blue',
+    //     animation: 'DROP',
+    //     position: {
+    //       lat: item['latitude'],
+    //       lng: item['longitude']
+    //     }
+    //   }).then((marker: Marker) => {
+        
+    //   });
+
+    //   console.log("Here:", item['name'], " ", item['latitude'])
+    // }
+    
   }  
 }
