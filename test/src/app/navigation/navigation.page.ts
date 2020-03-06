@@ -5,6 +5,7 @@ import { NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx'
 
 import { AngularFireDatabase } from '@angular/fire/database';
+import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 
 @Component({
   selector: 'app-navigation',
@@ -22,7 +23,8 @@ export class NavigationPage implements OnInit {
   constructor(private platform:Platform,
     private navCtrl: NavController,
     private geolocation: Geolocation,
-    private afDatabase : AngularFireDatabase) {}
+    private afDatabase : AngularFireDatabase,
+    private nativeGeocoder: NativeGeocoder) {}
 
   async ngOnInit() {
     await this.platform.ready();
@@ -66,6 +68,10 @@ export class NavigationPage implements OnInit {
       }
     }
     );
+    
+    this.geocode()
+
+    
     // console.log("here2",this.list)
     // console.log("here3",this.list.keys())
     // console.log("here3",this.list[0])
@@ -105,5 +111,22 @@ export class NavigationPage implements OnInit {
     //   console.log("Here:", item['name'], " ", item['latitude'])
     // }
     
-  }  
+  }
+  
+  geocode() {
+    let options: NativeGeocoderOptions = {
+      useLocale: true,
+      maxResults: 5
+    };
+    this.nativeGeocoder.forwardGeocode("39 cloister Ln, hicksville, ny, 11801", options)
+      .then((result: NativeGeocoderResult[]) => {
+          this.map.moveCamera({
+            target: {
+              lat: result[0].latitude,
+              lng: result[0].longitude
+            }
+          })
+        }
+      );
+  }
 }

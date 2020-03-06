@@ -7,13 +7,17 @@ import { IonicModule } from '@ionic/angular';
 import { NavigationPageRoutingModule } from './navigation-routing.module';
 
 import { NavigationPage } from './navigation.page';
+import { NativeGeocoder} from '@ionic-native/native-geocoder/ngx';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    NavigationPageRoutingModule
+    NavigationPageRoutingModule,
+  ],
+  providers: [
+    NativeGeocoder,
   ],
   declarations: [NavigationPage]
 })
