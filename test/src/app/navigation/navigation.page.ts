@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { GoogleMaps, GoogleMap, GoogleMapOptions } from '@ionic-native/google-maps/ngx'
+import { GoogleMaps, Geocoder, BaseArrayClass, Marker, GeocoderResult, GoogleMap, GoogleMapOptions,GoogleMapsEvent } from '@ionic-native/google-maps/ngx'
 import { NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx'
+
+import { AngularFireDatabase } from '@angular/fire/database';
 
 @Component({
   selector: 'app-navigation',
@@ -11,20 +13,30 @@ import { Geolocation } from '@ionic-native/geolocation/ngx'
 })
 export class NavigationPage implements OnInit {
 
-  map: GoogleMap;
+  public map: any
+
+  public position: any
+
+  public list: any
 
   constructor(private platform:Platform,
-    private navCtrl: NavController, private geolocation: Geolocation) {}
+    private navCtrl: NavController,
+    private geolocation: Geolocation,
+    private afDatabase : AngularFireDatabase,
+    private geocoder: Geocoder) {}
 
   async ngOnInit() {
     await this.platform.ready();
     await this.loadMap();
+    await this.addMarkers();
   }
 
-  loadMap() {
-    this.geolocation.getCurrentPosition().then((pos) => {
+  async loadMap() {
 
-      let mapOptions: GoogleMapOptions = {
+    
+    let pos = await this.geolocation.getCurrentPosition()
+
+    let mapOptions: GoogleMapOptions = {
         camera: {
           target: {
             lat: pos.coords.latitude,
@@ -33,10 +45,40 @@ export class NavigationPage implements OnInit {
           zoom: 10
         }
       }
-      this.map = GoogleMaps.create('map_canvas', mapOptions);
-    }, (err) => {
-      console.log(err); 
-      alert('Error finding location');
-    });
+
+    this.map = GoogleMaps.create('map_canvas', mapOptions);    
   }
+    
+  addMarkers() {
+    this.afDatabase.list("/meters/").valueChanges().subscribe((data) =>
+      this.list = data
+    );
+    let locations = []
+    let coords = []
+    for(let item of this.list) {
+      locations.push(item["location"])
+    }
+    this.geocoder.geocode({
+      "address" : locations
+    }).then((results: BaseArrayClass<GeocoderResult[]>) => {
+      results.forEach((coord: GeocoderResult[]) => {
+        this.map.addMarker({
+          position: coord[0].position
+        })
+      });
+    });
+    
+
+    // this.map.addMarker({
+    //   title: '@ionic-native/google-maps',
+    //   icon: 'blue',
+    //   animation: 'DROP',
+    //   position: {
+    //     lat: 33.771030,
+    //     lng: -84.391090
+    //   }
+    // }).then((marker: Marker) => {
+      
+    // });
+  }  
 }
