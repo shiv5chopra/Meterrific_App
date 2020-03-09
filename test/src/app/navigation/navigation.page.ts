@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { GoogleMaps, BaseArrayClass, Marker, GoogleMap, GoogleMapOptions,GoogleMapsEvent } from '@ionic-native/google-maps/ngx'
 import { NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx'
-
-import { AngularFireDatabase } from '@angular/fire/database';
 import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+import { AngularFireDatabase } from '@angular/fire/database';
+
+declare var google;
 
 @Component({
   selector: 'app-navigation',
@@ -14,11 +14,11 @@ import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@io
 })
 export class NavigationPage implements OnInit {
 
-  public map: any
-
-  public position: any
-
-  public list: any
+  @ViewChild('map', {static: false}) mapElement: ElementRef;
+  //@ViewChild('directionsPanel', {static: false}) directionsPanel: ElementRef;
+  map: any
+  userPosition: any
+  list: any
 
   constructor(private platform:Platform,
     private navCtrl: NavController,
@@ -29,104 +29,85 @@ export class NavigationPage implements OnInit {
   async ngOnInit() {
     await this.platform.ready();
     await this.loadMap();
-    await this.addMarkers();
+    //await this.navigate();
   }
 
+  /**
+   * Initialize and display the map with markers
+   */
   async loadMap() {
+    this.geolocation.getCurrentPosition().then((pos) => {
+      this.userPosition = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 
-    
-    let pos = await this.geolocation.getCurrentPosition()
-
-    let mapOptions: GoogleMapOptions = {
-        camera: {
-          target: {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude
-          },
-          zoom: 10
-        }
+      let mapOptions = {
+        center: this.userPosition,
+        zoom: 14,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
       }
 
-    this.map = GoogleMaps.create('map_canvas', mapOptions);    
+      this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+      this.addMarkers();
+    }, (err) => {
+      console.log(err);
+    }); 
   }
-    
+
+  /**
+   * Add available parking meters from the real-time database as map markers
+   */
   addMarkers() {
-    // this.list = this.afDatabase.database.ref("/meters/").toJSON()
+    var marker;
     this.afDatabase.list("/meters/").valueChanges().subscribe((data) => {
       for (let item of data) {
-        this.map.addMarker({
-          title: item['name'],
-          icon: 'blue',
-          animation: 'DROP',
-          position: {
-            lat: item['latitude'],
-            lng: item['longitude']
-          }
-        }).then((marker: Marker) => {
-          
-        });
+        if (item['availability']) {
+          marker = new google.maps.Marker({
+            position: new google.maps.LatLng(item['latitude'], item['longitude']),
+            map: this.map,
+            title: item['name']
+          });
+          marker.setMap(this.map);
+        }
       }
-    }
-    );
-    
-    this.geocode()
-
-    
-    // console.log("here2",this.list)
-    // console.log("here3",this.list.keys())
-    // console.log("here3",this.list[0])
-    // let locations = []
-    // let coords = []
-    // for(let item of this.list) {
-    //   locations.push((item["latitude"],item["longitude"]))
-    // }
-
-
-
-
-    // this.geocoder.geocode({
-    //   "address" : locations
-    // }).then((results: BaseArrayClass<GeocoderResult[]>) => {
-    //   results.forEach((coord: GeocoderResult[]) => {
-    //     this.map.addMarker({
-    //       position: coord[0].position
-    //     })
-    //   });
-    // });
-    
-    // for(let item of this.list) {
-    //   // let item = this.list[key]
-    //   this.map.addMarker({
-    //     title: item['name'],
-    //     icon: 'blue',
-    //     animation: 'DROP',
-    //     position: {
-    //       lat: item['latitude'],
-    //       lng: item['longitude']
-    //     }
-    //   }).then((marker: Marker) => {
-        
-    //   });
-
-    //   console.log("Here:", item['name'], " ", item['latitude'])
-    // }
-    
+    });
+    //this.geocode()
   }
   
-  geocode() {
-    let options: NativeGeocoderOptions = {
-      useLocale: true,
-      maxResults: 5
-    };
-    this.nativeGeocoder.forwardGeocode("39 cloister Ln, hicksville, ny, 11801", options)
-      .then((result: NativeGeocoderResult[]) => {
-          this.map.moveCamera({
-            target: {
-              lat: result[0].latitude,
-              lng: result[0].longitude
-            }
-          })
-        }
-      );
-  }
+  // geocode() {
+  //   let options: NativeGeocoderOptions = {
+  //     useLocale: true,
+  //     maxResults: 5
+  //   };
+  //   this.nativeGeocoder.forwardGeocode("39 cloister Ln, hicksville, ny, 11801", options)
+  //     .then((result: NativeGeocoderResult[]) => {
+  //         this.map.moveCamera({
+  //           target: {
+  //             lat: result[0].latitude,
+  //             lng: result[0].longitude
+  //           }
+  //         })
+  //       }
+  //     );
+  // }
+
+  /**
+   * Navigate from the user's location to the desired parking meter
+   * NEED TO ADD DESTINATION PARAM
+   */
+  // async navigate() {
+  //   let directionsService = new google.maps.DirectionsService;
+  //   let directionsDisplay = new google.maps.DirectionsRenderer;
+  //   directionsDisplay.setMap(this.map);
+  //   // directionsDisplay.setPanel(this.directionsPanel.nativeElement);
+  //   directionsService.route({
+  //     origin: this.userPosition,
+  //     destination: new google.maps.LatLng(33.744570, -84.365910),
+  //     travelMode: 'DRIVING'
+  //   }, (res, status) => {
+  //     if(status == google.maps.DirectionsStatus.OK){
+  //         directionsDisplay.setDirections(res);
+  //     } else {
+  //         console.warn(status);
+  //     }
+  //   });
+  // }
 }

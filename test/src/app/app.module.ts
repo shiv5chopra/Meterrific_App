@@ -18,7 +18,7 @@ import {AngularFireModule} from '@angular/fire';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { Geolocation } from "@ionic-native/geolocation/ngx"
-import { GoogleMaps } from "@ionic-native/google-maps"
+import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 
 import * as firebase from 'firebase';
 //firebase.initializeApp(environment.firebase);
@@ -39,7 +39,7 @@ import * as firebase from 'firebase';
     StatusBar,
     SplashScreen,
     Geolocation,
-    GoogleMaps,
+    NativeGeocoder,
     AuthenticationService,
     AngularFireDatabase,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
