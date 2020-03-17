@@ -15,7 +15,7 @@ declare var google;
 export class NavigationPage implements OnInit {
 
   @ViewChild('map', {static: false}) mapElement: ElementRef;
-  //@ViewChild('directionsPanel', {static: false}) directionsPanel: ElementRef;
+  @ViewChild('directionsPanel', {static: false}) directionsPanel: ElementRef;
   map: any
   userPosition: any
   list: any
@@ -29,7 +29,6 @@ export class NavigationPage implements OnInit {
   async ngOnInit() {
     await this.platform.ready();
     await this.loadMap();
-    //await this.navigate();
   }
 
   /**
@@ -47,6 +46,7 @@ export class NavigationPage implements OnInit {
 
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
       this.addMarkers();
+      this.navigate();
     }, (err) => {
       console.log(err);
     }); 
@@ -65,7 +65,7 @@ export class NavigationPage implements OnInit {
             map: this.map,
             title: item['name']
           });
-          marker.setMap(this.map);
+          //marker.setMap(this.map);
         }
       }
     });
@@ -92,22 +92,23 @@ export class NavigationPage implements OnInit {
   /**
    * Navigate from the user's location to the desired parking meter
    * NEED TO ADD DESTINATION PARAM
+   * Should we clear all other markers upon starting navigation?
    */
-  // async navigate() {
-  //   let directionsService = new google.maps.DirectionsService;
-  //   let directionsDisplay = new google.maps.DirectionsRenderer;
-  //   directionsDisplay.setMap(this.map);
-  //   // directionsDisplay.setPanel(this.directionsPanel.nativeElement);
-  //   directionsService.route({
-  //     origin: this.userPosition,
-  //     destination: new google.maps.LatLng(33.744570, -84.365910),
-  //     travelMode: 'DRIVING'
-  //   }, (res, status) => {
-  //     if(status == google.maps.DirectionsStatus.OK){
-  //         directionsDisplay.setDirections(res);
-  //     } else {
-  //         console.warn(status);
-  //     }
-  //   });
-  // }
+  navigate() {
+    let directionsService = new google.maps.DirectionsService();
+    let directionsDisplay = new google.maps.DirectionsRenderer();
+    directionsDisplay.setMap(this.map);
+    directionsDisplay.setPanel(this.directionsPanel.nativeElement);
+    directionsService.route({
+      origin: this.userPosition,
+      destination: new google.maps.LatLng(33.774358, -84.396463),
+      travelMode: 'DRIVING'
+    }, (res, status) => {
+      if(status == 'OK'){
+          directionsDisplay.setDirections(res);
+      } else {
+          console.warn(status);
+      }
+    });
+  }
 }
