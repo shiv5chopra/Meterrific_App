@@ -1,5 +1,39 @@
+ion-header {
+  background-color: #6AD0FF;
+  padding: 15px;
+}
+
+ion-title {
+  background-color: #6AD0FF;
+  font-size: 40px;
+  color: white;
+  font-family: 'Libre_Caslon';
+
+}
+
+ion-content {
+  background-color: white;
+  font-size: 20px;
+  color: black;
+  border: none;
+  font-family: 'Libre_Caslon';
+}
+
+img {
+  margin: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+}
+
+ion-footer {
+  background-color: #6AD0FF;
+  padding: 10px;
+}
+
 .round {
-    width: 280px;
-    height: 37px;
-    border-radius: 3%;
-  }
+  width: 250px;
+  height: 37px;
+  border-radius: 3%;
+}

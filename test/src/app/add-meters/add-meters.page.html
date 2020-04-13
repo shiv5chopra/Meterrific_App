@@ -1,55 +1,57 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="#6AD0FF">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>addMeters</ion-title>
+    <ion-title class="ion-text-center">Add A Meter</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  <form class="form" [formGroup]="validations_form"  (ngSubmit)="sendMeter()">
- 
-    <ion-item>
-      <ion-label  position="floating" color="primary">Meter Name</ion-label>
-      <ion-input type="text" formControlName="name"></ion-input>
-    </ion-item>
-    <div class="validation-errors">
-      <ng-container *ngFor="let validation of validation_messages.name">
-        <div class="error-message" *ngIf="validations_form.get('name').hasError(validation.type) && (validations_form.get('name').dirty || validations_form.get('name').touched)">
-          {{ validation.message }}
-        </div>
-      </ng-container>
-    </div>
- 
-    <ion-item>
-      <ion-label  position="floating" color="primary">Latitude</ion-label>
-      <ion-input type="text" formControlName="latitude" class="form-controll" required></ion-input>
-    </ion-item>
-    <div class="validation-errors">
-      <ng-container *ngFor="let validation of validation_messages.latitude">
-        <div class="error-message" *ngIf="validations_form.get('latitude').hasError(validation.type) && (validations_form.get('latitude').dirty || validations_form.get('latitude').touched)">
-          {{ validation.message }}
-        </div>
-      </ng-container>
-    </div>
+<ion-content padding color="#6AD0FF">
 
-    <ion-item>
-      <ion-label  position="floating" color="primary">Longitude</ion-label>
-      <ion-input type="text" formControlName="longitude" class="form-controll" required></ion-input>
-    </ion-item>
-    <div class="validation-errors">
-      <ng-container *ngFor="let validation of validation_messages.longitude">
-        <div class="error-message" *ngIf="validations_form.get('longitude').hasError(validation.type) && (validations_form.get('longitude').dirty || validations_form.get('longitude').touched)">
-          {{ validation.message }}
-        </div>
-      </ng-container>
-    </div>
- 
-    
-    <ion-button  class="submit-btn" type="submit"  [disabled]="!validations_form.valid">Register</ion-button>
-    <label class="error-message">{{errorMessage}}</label>
-    <label class="success-message">{{successMessage}}</label>
+  <!-- <ion-title class="ion-text-center">Add A Meter</ion-title> -->
+  <form class="form" [formGroup]="validations_form" (ngSubmit)="sendMeter()">
+      <br /><br />
+      <p> Meter Name </p>
+      <ion-item>
+          <ion-input type="text" formControlName="name"></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+          <ng-container *ngFor="let validation of validation_messages.name">
+              <div class="error-message" *ngIf="validations_form.get('name').hasError(validation.type) && (validations_form.get('name').dirty || validations_form.get('name').touched)">
+                  {{ validation.message }}
+              </div>
+          </ng-container>
+      </div>
+      <br />
+      <p> Latitude </p>
+      <ion-item>
+          <ion-input type="text" formControlName="latitude" class="form-controll" required></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+          <ng-container *ngFor="let validation of validation_messages.latitude">
+              <div class="error-message" *ngIf="validations_form.get('latitude').hasError(validation.type) && (validations_form.get('latitude').dirty || validations_form.get('latitude').touched)">
+                  {{ validation.message }}
+              </div>
+          </ng-container>
+      </div>
+
+      <br />
+      <p> Longitude </p>
+      <ion-item>
+          <ion-input type="text" formControlName="longitude" class="form-controll" required></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+          <ng-container *ngFor="let validation of validation_messages.longitude">
+              <div class="error-message" *ngIf="validations_form.get('longitude').hasError(validation.type) && (validations_form.get('longitude').dirty || validations_form.get('longitude').touched)">
+                  {{ validation.message }}
+              </div>
+          </ng-container>
+      </div>
+
+      <br />
+      <ion-button class="submit-btn" type="submit" [disabled]="!validations_form.valid">Add Meter</ion-button>
+      <label class="error-message">{{errorMessage}}</label>
+      <label class="success-message">{{successMessage}}</label>
   </form>
 </ion-content>
- 

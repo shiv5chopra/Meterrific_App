@@ -1,58 +1,57 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Dashboard</ion-title>
-  </ion-toolbar>
-</ion-header>
- 
-<ion-content padding>
- 
-  <ion-grid>
-    <ion-row>
-      <ion-col text-center>
-        Welcome to Dashboard!
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col text-center>
-        Your Registered EmailID : {{userEmail}}
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-title class="ion-text-center">Dashboard</ion-title>
+  </ion-header>
+      <ion-content padding>
+          <ion-grid>
+              <br />
+              <ion-row>
+                  <ion-col text-center>
+                      Welcome to your Dashboard!
+                  </ion-col>
+              </ion-row>
+              <br />
+              <ion-row>
+                  <ion-col text-center>
+                      Hello user : <br />{{userEmail}}
+                  </ion-col>
+              </ion-row>
+          </ion-grid>
+          <br />
+          <ion-row>
+              <ion-col text-center>
+                  <ion-button class="round" (click)="goToNavigationPage()">Navigation</ion-button>
+              </ion-col>
+          </ion-row>
+          <ion-row style="height: h"></ion-row>
 
-  <ion-row>
-    <ion-col text-center>
-      <ion-button class= "round" (click)="goToNavigationPage()">Navigate To Destination</ion-button>
-    </ion-col>
-  </ion-row>
-  <ion-row style="height: h"></ion-row>
+          <div *ngIf="admin == 'admin'">
+            <ion-row>
+                <ion-col text-center>
+                    <ion-button class="round" (click)="goToAddMetersPage()">Add A Meter</ion-button>
+                </ion-col>
+            </ion-row>
+            <ion-row style="height: h"></ion-row>
+          </div>
 
-  <ion-row>
-    <ion-col text-center>
-      <ion-button class= "round" (click)="goToTransactionPage()">Transaction History</ion-button>
-    </ion-col>
-  </ion-row>
-  <ion-row style="height: h"></ion-row>
+          <ion-row>
+            <ion-col text-center>
+              <ion-button class= "round" (click)="goToTransactionPage()">Transaction History</ion-button>
+            </ion-col>
+          </ion-row>
+          <ion-row style="height: h"></ion-row>
 
-  <ion-row>
-    <ion-col text-center>
-      <ion-button class= "round" (click)="goToPayPage()">Pay for Meter</ion-button>
-    </ion-col>
-  </ion-row>
-  <ion-row style="height: h"></ion-row>
+          <ion-row>
+            <ion-col text-center>
+              <ion-button class= "round" (click)="goToPayPage()">Pay for Meter</ion-button>
+            </ion-col>
+          </ion-row>
+          <ion-row style="height: h"></ion-row>
 
-  <div *ngIf="admin == 'admin'">
-  <ion-row>
-    <ion-col text-center>
-      <ion-button class= "round" (click)="goToAddMetersPage()">Add Meters</ion-button>
-    </ion-col>
-  </ion-row>
-  <ion-row style="height: h"></ion-row>
-  </div>
-
+          <br /><br />
+          <img src="../assets/img/Translucent.png" id="Car_Icon" height="140" width="60">
 </ion-content>
 <ion-footer (click)="logout()">
-  <ion-toolbar color="secondary">
-    <ion-title>Log out</ion-title>
-  </ion-toolbar>
+  <ion-title class="ion-text-center">Log out</ion-title>
 </ion-footer>
+
  
