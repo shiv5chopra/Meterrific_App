@@ -54,7 +54,10 @@ export class AddMetersPage implements OnInit {
     this.afDatabase.database.ref("/meters/").push({
       "name" : this.validations_form.get("name").value,
       "latitude" : this.validations_form.get("latitude").value,
-      "longitude" : this.validations_form.get("longitude").value
+      "longitude" : this.validations_form.get("longitude").value,
+      "availability" : 0,
+      "purchaseStatus" : 0,
+      "timeRemaining" : 0
     })
     // this.afDatabase.object("/meters/" + this.validations_form.get("name").value).push({
     //   "latitude" : this.validations_form.get("latitude").value,

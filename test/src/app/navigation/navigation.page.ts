@@ -31,7 +31,8 @@ export class NavigationPage implements OnInit {
   bestMeter: any
   fbList: any
   markers: any
-
+  distToDestination: any
+  done: any
   constructor(private platform:Platform,
     private navCtrl: NavController,
     private geolocation: Geolocation,
@@ -54,6 +55,7 @@ export class NavigationPage implements OnInit {
    * Initialize and display the map with markers
    */
   async loadMap() {
+    this.done = 0
     this.markers = []
     this.location = "hihi"
     this.bestDist = 9999999
@@ -80,17 +82,24 @@ export class NavigationPage implements OnInit {
   addMarkers() {
     var marker;
     this.afDatabase.list("/meters/").valueChanges().subscribe((data) => {
+      this.geolocation.getCurrentPosition().then((pos) => {
+        this.userPosition = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+      });
+      this.bestDist = 99999999
       this.clear()
       for (let item of data) {
         if (item['availability']) {
           let pos = new google.maps.LatLng(item['latitude'], item['longitude'])
+          var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
           marker = new google.maps.Marker({
             position: pos,
             map: this.map,
-            title: item['name']
+            title: item['name'],
           });
+          // marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
           this.markers.push(marker)
           if (this.destLatLong) {
+            
             let changed = 0
             let nDist = google.maps.geometry.spherical.computeDistanceBetween(this.destLatLong, pos)
             if (nDist < this.bestDist) {
@@ -98,12 +107,26 @@ export class NavigationPage implements OnInit {
               this.bestDist = nDist
               changed = 1
             }
-            this.navigate(pos)
+            // if (changed == 1) {
+
+            // }
+
+            this.distToDestination = google.maps.geometry.spherical.computeDistanceBetween(this.userPosition, this.bestMeter)
+            if (this.distToDestination < 20) {
+              this.done = 1
+              this.destLatLong = null
+              this.directionsDisplay.setMap(null)
+              this.directionsDisplay.setPanel(null)
+            }
           }
 
           //marker.setMap(this.map);
         }
       }
+      if (this.destLatLong) {
+        this.navigate(this.bestMeter)
+      }
+      
     });
     //this.geocode()
   }
@@ -117,6 +140,7 @@ export class NavigationPage implements OnInit {
 
   setDestination(dest) {
     this.destination = dest
+    this.bestDist = 9999999
 
     // let result = new google.maps.LatLng(33.744570, -84.365910)
     // console.log(result)
@@ -169,7 +193,7 @@ export class NavigationPage implements OnInit {
     //     this.directionsDisplay.setMap(null);
     //     this.directionsDisplay = null;
     // }
-    this.directionsDisplay = new google.maps.DirectionsRenderer();
+    this.directionsDisplay = new google.maps.DirectionsRenderer({preserveViewport: true});
 
     
     this.directionsDisplay.setMap(this.map);
@@ -187,6 +211,8 @@ export class NavigationPage implements OnInit {
     
     // this.directionsDisplay.setMap(this.map);
     // this.directionsDisplay.setPanel(this.directionsPanel.nativeElement);
+    this.directionsDisplay.setMap(this.map);
+    this.directionsDisplay.setPanel(this.directionsPanel.nativeElement);
     this.directionsService.route({
       origin: this.userPosition,
       destination: dest,
