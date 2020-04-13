@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx'
 import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { SelectMultipleControlValueAccessor } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
+import { Router, NavigationExtras } from '@angular/router';
 
 declare var google;
 
@@ -36,7 +36,7 @@ export class NavigationPage implements OnInit {
   done: any
   infoWindowContent: any
   constructor(private platform:Platform,
-    private navCtrl: NavController,
+    private router: Router,
     private geolocation: Geolocation,
     private afDatabase : AngularFireDatabase,
     private nativeGeocoder: NativeGeocoder,
@@ -61,6 +61,7 @@ export class NavigationPage implements OnInit {
     this.done = 0
     this.markers = {'pos':[]}
     this.bestDist = 9999999
+    this.distToDestination = 9999999
     this.geolocation.getCurrentPosition().then((pos) => {
       this.userPosition = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 
@@ -89,20 +90,34 @@ export class NavigationPage implements OnInit {
       this.geolocation.getCurrentPosition().then((pos) => {
         this.userPosition = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
       });
+      if (!this.done) {
+      let changed = 0
       this.bestDist = 99999999
       // this.clear()
+      var dist = this.distToDestination
+      console.log(this.distToDestination)
+      // console.log(this.destLatLong)
+      // console.log(!this.markers[this.destLatLong].availability)
+      
+      // if (this.destLatLong && this.distToDestination < 100 && !this.markers[this.destLatLong].availability) {
+      //   this.done = 1
+      //   this.destLatLong = null
+      //   this.directionsDisplay.setMap(null)
+      //   this.directionsDisplay.setPanel(null)
+      //   this.presentNavAlert()
+      // }
       for (let item of data) {
         let pos = new google.maps.LatLng(item['latitude'], item['longitude'])
-        if (!this.markers['pos'].includes(pos)) {
+        if (!this.markers['pos'].includes(pos.toString())) {
           var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
           marker = new google.maps.Marker({
             position: pos,
             map: this.map,
             title: item['name'],
-            icon:'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+            icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|7ef'
           });
           if (!item['availability']) {
-            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+            marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|aaa')
           }
 
           var infoWindow = new google.maps.InfoWindow({
@@ -111,11 +126,11 @@ export class NavigationPage implements OnInit {
           
 
           this.markers[pos] = {"availability": item['availability'], "marker": marker}
-          this.markers['pos'].push(pos)
+          this.markers['pos'].push(pos.toString())
           let self = this
 
           marker.addListener('click', function() {
-            self.presentAlert(this)
+            self.presentMarkerAlert(this)
           });
           // google.maps.event.addListener(marker, 'click', (e) => {
           //   var nPos = e.latLng
@@ -146,11 +161,27 @@ export class NavigationPage implements OnInit {
         }
         else if (item['availability'] && item['availability'] != this.markers[pos].availability) {
           this.markers[pos].availability = item['availability']
-          this.markers[pos].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+          this.markers[pos].marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|7ef')
         }
         else if (!item['availability'] && item['availability'] != this.markers[pos].availability) {
           this.markers[pos].availability = item['availability']
-          this.markers[pos].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
+          this.markers[pos].marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|aaa')
+          
+          console.log(dist)
+          console.log(dist < 100)
+
+          if (pos.toString() == this.destLatLong.toString()) {
+            this.done = 1
+            console.log(1)
+            if (dist < 100) {
+              console.log('here')
+              this.directionsDisplay.setMap(null)
+              this.directionsDisplay.setPanel(null)
+              this.presentNavAlert(this.destLatLong)
+            } else {
+              this.done = 0
+            }
+          }
         }
 
         // marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
@@ -158,40 +189,50 @@ export class NavigationPage implements OnInit {
           
           if (this.destLatLong) {
             
-            let changed = 0
+            
             let nDist = google.maps.geometry.spherical.computeDistanceBetween(this.destLatLong, pos)
             if (nDist < this.bestDist) {
               this.bestMeter = pos
               this.bestDist = nDist
               changed = 1
             }
-            // if (changed == 1) {
-
-            // }
 
             this.distToDestination = google.maps.geometry.spherical.computeDistanceBetween(this.userPosition, this.bestMeter)
-            if (this.distToDestination < 20) {
-              this.done = 1
-              this.destLatLong = null
-              this.directionsDisplay.setMap(null)
-              this.directionsDisplay.setPanel(null)
-            }
+            
           }
 
           //marker.setMap(this.map);
         }
       }
-      if (this.destLatLong) {
+      if (this.destLatLong && changed) {
         this.navigate(this.bestMeter)
       }
-      
+      }
     });
     //this.geocode()
   }
 
-  async presentAlert(marker) {
-    console.log("here" + marker)
-    if(marker.icon == 'http://maps.google.com/mapfiles/ms/icons/red-dot.png') {
+  async presentNavAlert(dest) {
+    let navigationExtras: NavigationExtras = { state: { meter: this.markers[dest].marker.title } };
+    const alert = await this.alertController.create({
+      header: 'Destination Reached',
+      subHeader: 'Have you parked at: ' + this.markers[dest].marker.title,
+      message: 'If you would like to pay click pay now.',
+      buttons: [
+        {
+          text: "Pay Now",
+          handler: data => {
+            this.router.navigate(['/pay-meter'], navigationExtras);
+          }
+        }, 
+        'Cancel'
+      ]
+    });
+    await alert.present();
+  }
+
+  async presentMarkerAlert(marker) {
+    if(marker.icon == 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|7ef') {
       const alert = await this.alertController.create({
         header: 'Marker Selected',
         subHeader: marker.title,
@@ -216,9 +257,6 @@ export class NavigationPage implements OnInit {
       });
       await alert.present();
     }
-    
-
-    
   }
 
   clear() {
@@ -307,7 +345,6 @@ export class NavigationPage implements OnInit {
     
     // this.directionsDisplay.setMap(this.map);
     // this.directionsDisplay.setPanel(this.directionsPanel.nativeElement);
-    console.log(dest)
     this.directionsDisplay.setMap(this.map);
     this.directionsDisplay.setPanel(this.directionsPanel.nativeElement);
     this.directionsService.route({

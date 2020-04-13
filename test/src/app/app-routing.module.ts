@@ -40,6 +40,10 @@ const routes: Routes = [
     path: 'add-meters',
     loadChildren: () => import('./add-meters/add-meters.module').then( m => m.AddMetersPageModule)
   },
+  {
+    path: 'pay-meter',
+    loadChildren: () => import('./pay-meter/pay-meter.module').then( m => m.PayMeterPageModule)
+  },
 
   //{ path: "hihi", loadChildren: './hihi/hihi.module#HihiModule'},
 ];
