@@ -3,20 +3,19 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>navigation</ion-title>
+    <ion-title>Navigate To Destination</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  {{distToDestination}} Hi
-  Done: {{done}}
   <ion-input placeholder="Enter Destination" [(ngModel)]="dest"></ion-input>
   <ion-button class="button" (click) ="setDestination(dest)">submit</ion-button>
   <ion-row style="height: 10px"></ion-row>
+  
   <ion-card>
 		<ion-card-content>
 			<div #directionsPanel></div>
 		</ion-card-content>
-	</ion-card>
+  </ion-card>
   <div #map id="map"></div>
 </ion-content>
