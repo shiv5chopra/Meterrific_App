@@ -35,6 +35,7 @@ export class NavigationPage implements OnInit {
   distToDestination: any
   done: any
   infoWindowContent: any
+  cMarker: any
   constructor(private platform:Platform,
     private router: Router,
     private geolocation: Geolocation,
@@ -83,10 +84,15 @@ export class NavigationPage implements OnInit {
       this.geolocation.getCurrentPosition().then((pos) => {
         this.userPosition = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
       });
-      marker = new google.maps.Marker({
+      if (this.cMarker != null) {
+        this.cMarker.setMap(null)
+      }
+      
+      this.cMarker = new google.maps.Marker({
         position: this.userPosition,
         map: this.map,
-        title: 'Current Position'
+        title: 'Current Position',
+        icon: 'assets/scar.png'
       });
       if (!this.done) {
       let changed = 0
@@ -292,7 +298,6 @@ export class NavigationPage implements OnInit {
 
   setMarkerDestination(marker) {
     this.destLatLong = marker.position
-    marker.setIcon('assets/grey_marker.png')
     this.navigate(this.destLatLong)
   }
 
