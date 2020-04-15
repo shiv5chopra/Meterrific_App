@@ -11,14 +11,13 @@
 
   <!-- <ion-title class="ion-text-center">Add A Meter</ion-title> -->
   <form class="form" [formGroup]="validations_form" (ngSubmit)="sendMeter()">
-      <br /><br />
-      <p> Meter Name </p>
+      <p> Meter address </p>
       <ion-item>
-          <ion-input type="text" formControlName="name"></ion-input>
+          <ion-input type="text" formControlName="address"></ion-input>
       </ion-item>
       <div class="validation-errors">
-          <ng-container *ngFor="let validation of validation_messages.name">
-              <div class="error-message" *ngIf="validations_form.get('name').hasError(validation.type) && (validations_form.get('name').dirty || validations_form.get('name').touched)">
+          <ng-container *ngFor="let validation of validation_messages.address">
+              <div class="error-message" *ngIf="validations_form.get('address').hasError(validation.type) && (validations_form.get('address').dirty || validations_form.get('address').touched)">
                   {{ validation.message }}
               </div>
           </ng-container>
@@ -44,6 +43,58 @@
       <div class="validation-errors">
           <ng-container *ngFor="let validation of validation_messages.longitude">
               <div class="error-message" *ngIf="validations_form.get('longitude').hasError(validation.type) && (validations_form.get('longitude').dirty || validations_form.get('longitude').touched)">
+                  {{ validation.message }}
+              </div>
+          </ng-container>
+      </div>
+
+      <br />
+      <p> Start Day Time </p>
+      <ion-item>
+          <ion-input type="text" formControlName="startDay" class="form-controll" required></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+          <ng-container *ngFor="let validation of validation_messages.startDay">
+              <div class="error-message" *ngIf="validations_form.get('startDay').hasError(validation.type) && (validations_form.get('startDay').dirty || validations_form.get('startDay').touched)">
+                  {{ validation.message }}
+              </div>
+          </ng-container>
+      </div>
+
+      <br />
+      <p> End Day Time </p>
+      <ion-item>
+          <ion-input type="text" formControlName="endDay" class="form-controll" required></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+          <ng-container *ngFor="let validation of validation_messages.endDay">
+              <div class="error-message" *ngIf="validations_form.get('endDay').hasError(validation.type) && (validations_form.get('endDay').dirty || validations_form.get('endDay').touched)">
+                  {{ validation.message }}
+              </div>
+          </ng-container>
+      </div>
+
+      <br />
+      <p> Cost for 15 Mins </p>
+      <ion-item>
+          <ion-input type="text" formControlName="cost" class="form-controll" required></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+          <ng-container *ngFor="let validation of validation_messages.cost">
+              <div class="error-message" *ngIf="validations_form.get('cost').hasError(validation.type) && (validations_form.get('cost').dirty || validations_form.get('cost').touched)">
+                  {{ validation.message }}
+              </div>
+          </ng-container>
+      </div>
+
+      <br />
+      <p> Max Minutes </p>
+      <ion-item>
+          <ion-input type="text" formControlName="maxMins" class="form-controll" required></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+          <ng-container *ngFor="let validation of validation_messages.maxMins">
+              <div class="error-message" *ngIf="validations_form.get('maxMins').hasError(validation.type) && (validations_form.get('maxMins').dirty || validations_form.get('maxMins').touched)">
                   {{ validation.message }}
               </div>
           </ng-container>

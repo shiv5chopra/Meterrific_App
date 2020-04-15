@@ -45,10 +45,17 @@ export class NavigationPage implements OnInit {
   async ngOnInit() {
     await this.platform.ready();
     await this.loadMap();
+    // this.metersRef = this.afDatabase.list("/meters/")
+
+    // this.metersRef.valueChanges(['child_changed'])
+    //   .subscribe(meters => {
+    //     console.log("HIHI")
+    //     //this.selectMeter(meters)
+    //   });
   }
 
   /**
-   * Initialize and display the map with markers. Initialize navigation setup.
+   * Initialize and display the map with markers
    */
   async loadMap() {
     this.done = 0
@@ -83,11 +90,6 @@ export class NavigationPage implements OnInit {
       this.geolocation.getCurrentPosition().then((pos) => {
         this.userPosition = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
       });
-      marker = new google.maps.Marker({
-        position: this.userPosition,
-        map: this.map,
-        title: 'Current Position'
-      });
       if (!this.done) {
       let changed = 0
       this.bestDist = 99999999
@@ -107,14 +109,15 @@ export class NavigationPage implements OnInit {
       for (let item of data) {
         let pos = new google.maps.LatLng(item['latitude'], item['longitude'])
         if (!this.markers['pos'].includes(pos.toString())) {
+          var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
           marker = new google.maps.Marker({
             position: pos,
             map: this.map,
-            title: item['address'],
-            icon: 'assets/blue_marker.png'
+            title: item['name'],
+            icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|7ef'
           });
           if (!item['availability']) {
-            marker.setIcon('assets/grey_marker.png')
+            marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|aaa')
           }
 
           var infoWindow = new google.maps.InfoWindow({
@@ -158,11 +161,11 @@ export class NavigationPage implements OnInit {
         }
         else if (item['availability'] && item['availability'] != this.markers[pos].availability) {
           this.markers[pos].availability = item['availability']
-          this.markers[pos].marker.setIcon('assets/blue_marker.png')
+          this.markers[pos].marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|7ef')
         }
         else if (!item['availability'] && item['availability'] != this.markers[pos].availability) {
           this.markers[pos].availability = item['availability']
-          this.markers[pos].marker.setIcon('assets/grey_marker.png')
+          this.markers[pos].marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|aaa')
           
           console.log(dist)
           console.log(dist < 100)
@@ -229,10 +232,10 @@ export class NavigationPage implements OnInit {
   }
 
   async presentMarkerAlert(marker) {
-    if(marker.icon == 'assets/blue_marker.png') {
+    if(marker.icon == 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|7ef') {
       const alert = await this.alertController.create({
         header: 'Marker Selected',
-        subHeader: 'Address: ' + marker.title,
+        subHeader: marker.title,
         message: 'This meter is open and available to navigate to!',
         buttons: [
           {
@@ -249,7 +252,7 @@ export class NavigationPage implements OnInit {
       const alert = await this.alertController.create({
         header: 'Marker Selected',
         subHeader: marker.title,
-        message: 'This meter is occupied. Please try a blue marker.',
+        message: 'This meter is occupied. Please try a red marker.',
         buttons: ['Done']
       });
       await alert.present();
@@ -292,7 +295,6 @@ export class NavigationPage implements OnInit {
 
   setMarkerDestination(marker) {
     this.destLatLong = marker.position
-    marker.setIcon('assets/grey_marker.png')
     this.navigate(this.destLatLong)
   }
 

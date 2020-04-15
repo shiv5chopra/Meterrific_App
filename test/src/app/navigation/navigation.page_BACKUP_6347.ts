@@ -110,8 +110,13 @@ export class NavigationPage implements OnInit {
           marker = new google.maps.Marker({
             position: pos,
             map: this.map,
-            title: item['address'],
+<<<<<<< HEAD
+            title: item['name'],
             icon: 'assets/blue_marker.png'
+=======
+            title: item['address'],
+            icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|7ef'
+>>>>>>> e25047670435489637143b0e28627fc70f4f1a86
           });
           if (!item['availability']) {
             marker.setIcon('assets/grey_marker.png')

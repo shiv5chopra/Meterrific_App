@@ -110,7 +110,7 @@ export class NavigationPage implements OnInit {
           marker = new google.maps.Marker({
             position: pos,
             map: this.map,
-            title: item['address'],
+            title: item['name'],
             icon: 'assets/blue_marker.png'
           });
           if (!item['availability']) {
@@ -232,7 +232,7 @@ export class NavigationPage implements OnInit {
     if(marker.icon == 'assets/blue_marker.png') {
       const alert = await this.alertController.create({
         header: 'Marker Selected',
-        subHeader: 'Address: ' + marker.title,
+        subHeader: marker.title,
         message: 'This meter is open and available to navigate to!',
         buttons: [
           {
@@ -249,7 +249,7 @@ export class NavigationPage implements OnInit {
       const alert = await this.alertController.create({
         header: 'Marker Selected',
         subHeader: marker.title,
-        message: 'This meter is occupied. Please try a blue marker.',
+        message: 'This meter is occupied. Please try a red marker.',
         buttons: ['Done']
       });
       await alert.present();
