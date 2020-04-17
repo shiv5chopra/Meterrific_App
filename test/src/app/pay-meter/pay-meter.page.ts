@@ -32,7 +32,7 @@ export class PayMeterPage implements OnInit {
 
   ngOnInit() {
     this.buttonVisible = false
-    var obj = "/meters/-M58qvH3qVNPypCXnAhT"
+    var obj = "/meters/" + this.meterID
     if (!this.meterID) {
       this.router.navigate(['navigation'])
     }
@@ -44,7 +44,7 @@ export class PayMeterPage implements OnInit {
       }
       if (this.meter.availability) {
         var meters = this.afDatabase.list("/meters/");
-        meters.update("-M58qvH3qVNPypCXnAhT", { purchaseStatus: 0});
+        meters.update(this.meterID, { purchaseStatus: 0});
       }
     });
   }
@@ -119,8 +119,8 @@ export class PayMeterPage implements OnInit {
     var split = timeChosen.split(" ");
     var num = parseInt(split[0])
     var meters = this.afDatabase.list("/meters/");
-    meters.update("-M58qvH3qVNPypCXnAhT", { purchaseStatus: 1 });
-    meters.update("-M58qvH3qVNPypCXnAhT", { timeRemaining: num });
+    meters.update(this.meterID, { purchaseStatus: 1 });
+    meters.update(this.meterID, { timeRemaining: num });
   }
 
 }
