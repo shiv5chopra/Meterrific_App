@@ -11,46 +11,66 @@
 <div *ngIf="meter">
   <p> Selected Meter </p>
   {{ meter.address }}
-  <ion-card (click)="displayChoice('fifteen')">
-    <ion-card-header>
-      15 Minutes
-    </ion-card-header>
-    <ion-card-content>
-      Start: {{ meter.startDay }}<br>
-      End: {{ meter.endDay }}<br>
-      Cost: ${{ meter.cost }}
-    </ion-card-content>
-  </ion-card>
-  <ion-card (click)="displayChoice('thirty')">
-    <ion-card-header>
-      30 Minutes
-    </ion-card-header>
-    <ion-card-content onload="calc()">
-      Start: {{ meter.startDay }}<br>
-      End: {{ meter.endDay }}<br>
-      Cost: {{ meter.cost }}
-    </ion-card-content>
-  </ion-card>
-  <ion-card (click)="displayChoice('fortyfive')">
-    <ion-card-header>
-      45 Minutes
-    </ion-card-header>
-    <ion-card-content>
-      Start: {{ meter.startDay }}<br>
-      End: {{ meter.endDay }}<br>
-      Cost: {{ meter.cost }}
-    </ion-card-content>
-  </ion-card>
-  <ion-card (click)="displayChoice()">
-    <ion-card-header>
-      60 Minutes
-    </ion-card-header>
-    <ion-card-content>
-      Start: {{ meter.startDay }}<br>
-      End: {{ meter.endDay }}<br>
-      Cost: {{ meter.cost }}
-    </ion-card-content>
-  </ion-card>
-</div> -->
+  <ion-slide>
+  <ion-grid>
+  <ion-row>
+    <ion-col>
+      <ion-card (click)="displayChoice('fifteen')">
+        <ion-card-header>
+          15 Minutes
+        </ion-card-header>
+        <ion-card-content>
+          Start: {{ meter.startDay }}<br>
+          End: {{ meter.endDay }}<br>
+          Cost: ${{ meter.cost }}
+        </ion-card-content>
+      </ion-card>
+      
+    </ion-col>
+    <ion-col>
+    <ion-card (click)="displayChoice('thirty')">
+      <ion-card-header>
+        30 Minutes
+      </ion-card-header>
+      <ion-card-content onload="calc()">
+        Start: {{ meter.startDay }}<br>
+        End: {{ meter.endDay }}<br>
+        Cost: {{ meter.cost }}
+      </ion-card-content>
+    </ion-card>
+  </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col>
+      <ion-card (click)="displayChoice('fortyfive')">
+        <ion-card-header>
+          45 Minutes
+        </ion-card-header>
+        <ion-card-content>
+          Start: {{ meter.startDay }}<br>
+          End: {{ meter.endDay }}<br>
+          Cost: {{ meter.cost }}
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+    <ion-col>
+      <ion-card (click)="displayChoice()">
+        <ion-card-header>
+          60 Minutes
+        </ion-card-header>
+        <ion-card-content>
+          Start: {{ meter.startDay }}<br>
+          End: {{ meter.endDay }}<br>
+          Cost: {{ meter.cost }}
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+
+  </ion-grid>
+  </ion-slide>
+</div>
+-->
 
 </ion-content>

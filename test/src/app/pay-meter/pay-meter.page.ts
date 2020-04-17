@@ -14,10 +14,11 @@ import { map } from 'rxjs/operators';
 })
 export class PayMeterPage implements OnInit {
   meter: any;
-  meterID: any;
+  meterName: any;
   present: any;
   meterKey: any;
-  public patientPics$: Observable<any[]>;
+  public interval: any;
+  getMeter: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -28,19 +29,19 @@ export class PayMeterPage implements OnInit {
     private alertController : AlertController) {
       this.route.queryParams.subscribe(params => {
         if (this.router.getCurrentNavigation().extras.state) {
-          this.meterID = this.router.getCurrentNavigation().extras.state.meter;
+          this.meterName = this.router.getCurrentNavigation().extras.state.meter;
         }
       });
     }
 
   ngOnInit() {
-    var obj = "/meters/" + this.meterID
-    if (!this.meterID) {
+    var obj = "/meters/" + this.meterName
+    if (!this.meterName) {
       this.router.navigate(['navigation'])
     }
 
     // this.patientPics$ =
-   this.afDatabase.list("/meters").snapshotChanges()
+    this.getMeter = this.afDatabase.list("/meters").snapshotChanges()
       .pipe(
         map(actions => {
           return actions.map(a => {
@@ -53,31 +54,42 @@ export class PayMeterPage implements OnInit {
       ).subscribe(meters => {
         // let meter = <any>{}
         for(let meter of meters) {
-          if (meter.data.address == this.meterID) {
+          if (meter.data.address == this.meterName) {
             this.meterKey = meter.key;
+            this.meter = meter.data
             console.log(this.meterKey)
+            if (meter.data.availability && !this.present) {
+              this.presentAlert()
+            }
+            if (meter.data.availability) {
+              var list = this.afDatabase.list("/meters/");
+              list.update(this.meterKey, { purchaseStatus: 0, timeRemaining: 0});
+            }
           }
         }
       })
-    this.afDatabase.list("/meters/"+this.meterKey).valueChanges().subscribe((data) => {
-      console
-      if (data.availability && !this.present) {
-        this.presentAlert()
-      }
-      if (this.meter.availability) {
-        var meters = this.afDatabase.list("/meters/");
-        meters.update(this.meterID, { purchaseStatus: 0});
-      }
-    })
-    this.main()
+
+    // this.interval = setInterval(() => {
+    //     this.main();
+    // }, 500);
     
   }
 
   main() {
-    // this.patientPics$.forEach(element => {
-    //   console.log(element)
-      
-    // });
+    
+    // if (this.meterKey) {
+    //   this.afDatabase.list("/meters/"+this.meterKey).valueChanges().subscribe((data) => {
+    //     console.log(data)
+    //     if (data[0] && !this.present) {
+    //       this.presentAlert()
+    //     }
+    //     if (data[0]) {
+    //       var meters = this.afDatabase.list("/meters/");
+    //       meters.update(this.meterName, { purchaseStatus: 0});
+    //     }
+    //   })
+    //   clearInterval(this.interval);
+    // }
   }
 
 
@@ -86,20 +98,21 @@ export class PayMeterPage implements OnInit {
     const alert = await this.alertController.create({
       header: 'Meter Empty',
       subHeader: 'You have left the meter near: ' + this.meter.address,
-      message: 'Go back to navigation page page?',
+      message: 'We have reset your time, if this is a mistake contact support',
       buttons: [
         {
-          text: "Yes",
+          text: "Ok",
           handler: data => {
             this.router.navigate(['navigation'])
           }
-        },
-        {
-          text: "No",
-          handler: data => {
-            this.present = 0
-          }
         }
+        // ,
+        // {
+        //   text: "No",
+        //   handler: data => {
+        //     this.present = 0
+        //   }
+        // }
       ]
     });
     await alert.present();
@@ -146,10 +159,14 @@ export class PayMeterPage implements OnInit {
   updateFirebase(timeChosen) {
     console.log("Updating database")
     var split = timeChosen.split(" ");
-    var num = parseInt(split[0])
+    var num = parseInt(split[0])*60
     var meters = this.afDatabase.list("/meters/");
-    meters.update(this.meterID, { purchaseStatus: 1 });
-    meters.update(this.meterID, { timeRemaining: num });
+    meters.update(this.meterKey, { purchaseStatus: 1,timeRemaining: num });
+  }
+
+  ngOnDestroy() {
+    this.getMeter.unsubscribe();
+    clearInterval(this.interval);
   }
 
 }

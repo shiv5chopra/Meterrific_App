@@ -37,6 +37,7 @@ export class NavigationPage implements OnInit {
   done: any
   infoWindowContent: any
   cMarker: any
+  getMeter: any
   constructor(private platform:Platform,
     private router: Router,
     private geolocation: Geolocation,
@@ -81,7 +82,7 @@ export class NavigationPage implements OnInit {
    */
   addMarkers() {
     var marker;
-    this.afDatabase.list("/meters/").valueChanges().subscribe((data) => {
+    this.getMeter = this.afDatabase.list("/meters/").valueChanges().subscribe((data) => {
       this.geolocation.getCurrentPosition().then((pos) => {
         this.userPosition = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
       });
@@ -217,10 +218,13 @@ export class NavigationPage implements OnInit {
   }
 
   sendNavAlert() {
+    // if (this.destLatLong) {
+    //   this.presentNavAlert(this.destLatLong)
+    // }
     var hi = new google.maps.LatLng(33.771030, -84.391090)
     this.presentNavAlert(hi)
   }
-  
+
   async presentNavAlert(dest) {
     let navigationExtras: NavigationExtras = { state: { meter: this.markers[dest].marker.title } };
     const alert = await this.alertController.create({
@@ -384,4 +388,9 @@ export class NavigationPage implements OnInit {
   update() {
     
   }
+  ngOnDestroy() {
+    this.getMeter.unsubscribe();
+    clearInterval(this.interval);
+  }
 }
+
