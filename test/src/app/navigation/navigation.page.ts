@@ -6,6 +6,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { SelectMultipleControlValueAccessor } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { Router, NavigationExtras } from '@angular/router';
+import { map } from 'rxjs/operators';
 
 declare var google;
 
@@ -215,6 +216,11 @@ export class NavigationPage implements OnInit {
     //this.geocode()
   }
 
+  sendNavAlert() {
+    var hi = new google.maps.LatLng(33.771030, -84.391090)
+    this.presentNavAlert(hi)
+  }
+  
   async presentNavAlert(dest) {
     let navigationExtras: NavigationExtras = { state: { meter: this.markers[dest].marker.title } };
     const alert = await this.alertController.create({

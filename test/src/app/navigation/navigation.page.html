@@ -8,8 +8,9 @@
 </ion-header>
 
 <ion-content>
-  <ion-input placeholder="Enter Destination" [(ngModel)]="dest"></ion-input>
+  <ion-input clear-input = true placeholder="Enter Destination" [(ngModel)]="dest"></ion-input>
   <ion-button class="button" (click) ="setDestination(dest)">submit</ion-button>
+  <ion-button class="button" (click) ="sendNavAlert()">Pay for Meter</ion-button>
   <ion-row style="height: 10px"></ion-row>
   
   <ion-card>

@@ -1,14 +1,21 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="#6AD0FF">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>payMeter</ion-title>
+    <ion-title class="ion-text-center">Pay For Meter</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding color="#6AD0FF">
-<div *ngIf="meter">{{meter.name}} {{meter.availability}}
+  Hello
+  <div *ngIf="patientPics$ | async; let patientPics; else loading">
+    <ion-card *ngFor="let item of patientPics; let i=index">
+      item.key
+    </ion-card>
+    <div *ngIf="patientPics.length === 0">There are no pictures for you.</div>
+  </div>
+<!-- <div *ngIf="meter">{{meter.name}} {{meter.availability}}
   <p> Selected Meter </p>
   <li>
     {{ meter.address }}
@@ -23,6 +30,6 @@
       Cost:
     </ion-card-content>
   </ion-card>
-</div>
+</div> -->
 
 </ion-content>

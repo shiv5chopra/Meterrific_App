@@ -4,6 +4,8 @@ import { AuthenticationService } from '../services/authentication.service';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AlertController, } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-pay-meter',
@@ -14,6 +16,8 @@ export class PayMeterPage implements OnInit {
   meter: any;
   meterName: any;
   present: any;
+  meterKey: any;
+  public patientPics$: Observable<any[]>;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,19 +37,41 @@ export class PayMeterPage implements OnInit {
     if (!this.meterName) {
       this.router.navigate(['navigation'])
     }
-    this.afDatabase.list("/meters/").valueChanges().subscribe((data) => {
-      
-      for (let item of data) {
-        console.log(item)
-        if (item['name'] == this.meterName) {
-          this.meter = item
+    // this.patientPics$ =
+   this.afDatabase.list("/meters").snapshotChanges()
+      .pipe(
+        map(actions => {
+          return actions.map(a => {
+            const data = a.payload.val();
+            const key = a.payload.key;
+            // console.log(key)
+            return { key, data };
+          });
+        })
+      ).subscribe(meters => {
+        // let meter = <any>{}
+        for(let meter of meters) {
+          if (meter.data.address == this.meterName) {
+            this.meterKey = meter.key;
+            console.log(this.meterKey)
+          }
         }
-      }
-      if (this.meter.availability && !this.present) {
+      })
+    this.afDatabase.list("/meters/"+this.meterKey).valueChanges().subscribe((data) => {
+      console
+      if (data.availability && !this.present) {
         this.presentAlert()
-      }
-    });
+      } 
+    })
+    this.main()
     
+  }
+
+  main() {
+    // this.patientPics$.forEach(element => {
+    //   console.log(element)
+      
+    // });
   }
 
   async presentAlert() {
