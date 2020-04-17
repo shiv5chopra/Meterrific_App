@@ -54,14 +54,14 @@ export class PayMeterPage implements OnInit {
       ).subscribe(meters => {
         // let meter = <any>{}
         for(let meter of meters) {
-          if (meter.data.address == this.meterName) {
+          if (meter['data']['address'] == this.meterName) {
             this.meterKey = meter.key;
             this.meter = meter.data
             console.log(this.meterKey)
-            if (meter.data.availability && !this.present) {
+            if (meter['data']['availability'] && !this.present) {
               this.presentAlert()
             }
-            if (meter.data.availability) {
+            if (meter['data']['availability']) {
               var list = this.afDatabase.list("/meters/");
               list.update(this.meterKey, { purchaseStatus: 0, timeRemaining: 0});
             }
