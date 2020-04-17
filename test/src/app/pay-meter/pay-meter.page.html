@@ -8,26 +8,47 @@
 </ion-header>
 
 <ion-content padding color="#6AD0FF">
-  Hello
-  <div *ngIf="patientPics$ | async; let patientPics; else loading">
-    <ion-card *ngFor="let item of patientPics; let i=index">
-      item.key
-    </ion-card>
-    <div *ngIf="patientPics.length === 0">There are no pictures for you.</div>
-  </div>
-<!-- <div *ngIf="meter">{{meter.name}} {{meter.availability}}
+<div *ngIf="meter">
   <p> Selected Meter </p>
-  <li>
-    {{ meter.address }}
-  </li>
-  <ion-card>
+  {{ meter.address }}
+  <ion-card (click)="displayChoice('fifteen')">
     <ion-card-header>
       15 Minutes
     </ion-card-header>
     <ion-card-content>
-      Start:
-      End:
-      Cost:
+      Start: {{ meter.startDay }}<br>
+      End: {{ meter.endDay }}<br>
+      Cost: ${{ meter.cost }}
+    </ion-card-content>
+  </ion-card>
+  <ion-card (click)="displayChoice('thirty')">
+    <ion-card-header>
+      30 Minutes
+    </ion-card-header>
+    <ion-card-content onload="calc()">
+      Start: {{ meter.startDay }}<br>
+      End: {{ meter.endDay }}<br>
+      Cost: {{ meter.cost }}
+    </ion-card-content>
+  </ion-card>
+  <ion-card (click)="displayChoice('fortyfive')">
+    <ion-card-header>
+      45 Minutes
+    </ion-card-header>
+    <ion-card-content>
+      Start: {{ meter.startDay }}<br>
+      End: {{ meter.endDay }}<br>
+      Cost: {{ meter.cost }}
+    </ion-card-content>
+  </ion-card>
+  <ion-card (click)="displayChoice()">
+    <ion-card-header>
+      60 Minutes
+    </ion-card-header>
+    <ion-card-content>
+      Start: {{ meter.startDay }}<br>
+      End: {{ meter.endDay }}<br>
+      Cost: {{ meter.cost }}
     </ion-card-content>
   </ion-card>
 </div> -->
