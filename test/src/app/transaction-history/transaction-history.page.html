@@ -1,9 +1,27 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>transactionHistory</ion-title>
+  <ion-toolbar color="#6AD0FF">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">Transactions</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content padding color="#6AD0FF">
+  <div *ngIf="transactions$ | async; let transactions; else loading">
+    <ion-card *ngFor="let trans of transactions.slice().reverse();">
+      <ion-card-header>
+        Meter Address: {{trans.payload.val().address}}
+      </ion-card-header>
 
+      <ion-card-content>
+        Start Time: {{trans.payload.val().startTime}}<br>
+        End Time: {{trans.payload.val().endTime}}<br>
+        Cost: {{trans.payload.val().cost}}<br>
+      </ion-card-content>
+    </ion-card>
+    <div *ngIf="transactions.length === 0">
+      No transactions for this user.
+    </div>
+  </div>
 </ion-content>

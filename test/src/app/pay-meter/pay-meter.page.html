@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content padding color="#6AD0FF">
-<div *ngIf="meter">
+<div *ngIf="meter && !meter.purchaseStatus">
   <p> Selected Meter </p>
   {{ meter.address }}
   <ion-slide>
@@ -20,9 +20,9 @@
           15 Minutes
         </ion-card-header>
         <ion-card-content>
-          Start: {{ meter.startDay }}<br>
-          End: {{ meter.endDay }}<br>
-          Cost: ${{ meter.cost }}
+          Start: {{ startTime }}<br>
+          End: {{ endTime[0] }}<br>
+          Cost: ${{ cost[0] }}
         </ion-card-content>
       </ion-card>
       
@@ -33,9 +33,9 @@
         30 Minutes
       </ion-card-header>
       <ion-card-content onload="calc()">
-        Start: {{ meter.startDay }}<br>
-        End: {{ meter.endDay }}<br>
-        Cost: {{ meter.cost }}
+        Start: {{ startTime }}<br>
+        End: {{ endTime[1] }}<br>
+        Cost: ${{ cost[1] }}
       </ion-card-content>
     </ion-card>
   </ion-col>
@@ -48,9 +48,9 @@
           45 Minutes
         </ion-card-header>
         <ion-card-content>
-          Start: {{ meter.startDay }}<br>
-          End: {{ meter.endDay }}<br>
-          Cost: {{ meter.cost }}
+          Start: {{ startTime }}<br>
+          End: {{ endTime[2] }}<br>
+          Cost: ${{ cost[2] }}
         </ion-card-content>
       </ion-card>
     </ion-col>
@@ -60,9 +60,9 @@
           60 Minutes
         </ion-card-header>
         <ion-card-content>
-          Start: {{ meter.startDay }}<br>
-          End: {{ meter.endDay }}<br>
-          Cost: {{ meter.cost }}
+          Start: {{ startTime }}<br>
+          End: {{ endTime[3] }}<br>
+          Cost: ${{ cost[3] }}
         </ion-card-content>
       </ion-card>
     </ion-col>
@@ -71,6 +71,19 @@
   </ion-grid>
   </ion-slide>
 </div>
--->
+
+<div *ngIf="meter && meter.purchaseStatus">
+  <ion-card>
+    <ion-card-header>
+      Meter: {{meter.address}} has been purchased.
+    </ion-card-header>
+    <ion-card-content>
+      Start Time: {{startTime}}<br>
+      Time Remaining: {{remMins}} minutes<br>
+      End Time: {{ endTime }}
+    </ion-card-content>
+  </ion-card>
+
+</div>
 
 </ion-content>

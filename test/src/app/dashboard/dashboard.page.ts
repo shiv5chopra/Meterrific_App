@@ -13,6 +13,8 @@ export class DashboardPage implements OnInit {
  
   public userEmail: string
   public admin: string
+  meter: any
+  remMins: any
  
   constructor(
     private navCtrl: NavController,
@@ -23,6 +25,7 @@ export class DashboardPage implements OnInit {
   
 
   ngOnInit(){
+
     
     if(this.authService.userDetails()){
       this.userEmail = this.authService.userDetails().email;
@@ -33,6 +36,21 @@ export class DashboardPage implements OnInit {
 
     this.afDatabase.object(this.authService.userDetails().uid).valueChanges().subscribe((user : any) => {
       this.admin = user.userType
+    })
+
+    this.afDatabase.list("/meters").valueChanges().subscribe((data) => {
+      var changed = 0
+      for (let item of data) {
+        if (item["userId"] == this.authService.userDetails().uid) {
+          this.meter = item
+          this.remMins = Math.round(this.meter["timeRemaining"]/60)
+          changed = 1
+        }  
+      }
+
+      if (changed == 0) {
+        this.meter = null
+      }       
     })
   }
  
@@ -55,5 +73,12 @@ export class DashboardPage implements OnInit {
     this.navCtrl.navigateForward('/add-meters')
   }
 
+  goToTransactionPage() {
+    this.navCtrl.navigateForward('/transaction-history')
+  }
+
+  goToMeterStatusPage() {
+    this.navCtrl.navigateForward('/meter-status')
+  }
   
 }

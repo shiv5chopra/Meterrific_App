@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar color="#6AD0FF">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">Meter Status</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding color="#6AD0FF">
+  <div *ngIf="meter">
+    <ion-card>
+      <ion-card-header>
+        You are currently paying for parking meter at:
+        {{meter.address}}.
+      </ion-card-header>
+      <ion-card-content>
+        Start Time: {{ meter.startTime }}<br>
+        Time Remaining: {{ remMins }} minutes<br>
+        End Time: {{ meter.endTime }}
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="!meter">
+    <ion-card>
+      <ion-card-header>
+        You are currently not paying for a parking meter. <br>
+      </ion-card-header>
+    </ion-card>
+  </div>
+</ion-content>

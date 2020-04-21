@@ -173,15 +173,14 @@ export class NavigationPage implements OnInit {
           this.markers[pos].marker.setIcon('assets/grey_marker.png')
           
           console.log(dist)
-          console.log(dist < 100)
+          console.log(dist < 10000)
 
           if (pos.toString() == this.destLatLong.toString()) {
             this.done = 1
             console.log(1)
-            if (dist < 100) {
+            if (dist < 3000) {
               console.log('here')
-              this.directionsDisplay.setMap(null)
-              this.directionsDisplay.setPanel(null)
+              
               this.presentNavAlert(this.destLatLong)
             } else {
               this.done = 0
@@ -210,19 +209,19 @@ export class NavigationPage implements OnInit {
         }
       }
       if (this.destLatLong && changed) {
-        this.navigate(this.bestMeter)
-      }
+          this.navigate(this.bestMeter)
+        }
       }
     });
     //this.geocode()
   }
 
   sendNavAlert() {
-    // if (this.destLatLong) {
-    //   this.presentNavAlert(this.destLatLong)
-    // }
-    var hi = new google.maps.LatLng(33.771030, -84.391090)
-    this.presentNavAlert(hi)
+    if (this.destLatLong) {
+      this.presentNavAlert(this.destLatLong)
+    }
+    // var hi = new google.maps.LatLng(40.744757, -73.511334)
+    // this.presentNavAlert(hi)
   }
 
   async presentNavAlert(dest) {
@@ -235,6 +234,8 @@ export class NavigationPage implements OnInit {
         {
           text: "Pay Now",
           handler: data => {
+            this.directionsDisplay.setMap(null)
+            this.directionsDisplay.setPanel(null)
             this.router.navigate(['/pay-meter'], navigationExtras);
           }
         }, 

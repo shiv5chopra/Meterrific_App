@@ -33,7 +33,13 @@ ion-footer {
 }
 
 .round {
-  width: 250px;
+  width:90%;
   height: 37px;
   border-radius: 3%;
+}
+
+ion-card {
+  width:90%;
+  align-content: center;
+  background-color: white;
 }

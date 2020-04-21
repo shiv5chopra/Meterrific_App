@@ -17,18 +17,30 @@
               </ion-row>
           </ion-grid>
           <br />
-          <ion-row>
+
+          <div *ngIf="meter">
+            <ion-row>
+              <ion-col text-center>
+                <ion-card>
+                  <ion-card-header>
+                    You are currently paying for parking meter at:
+                    {{meter.address}}.
+                  </ion-card-header>
+                  <ion-card-content>
+                    Start Time: {{ meter.startTime }}<br>
+                    Time Remaining: {{ remMins }} minutes<br>
+                    End Time: {{ meter.endTime }}
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </div>
+        
+          <div *ngIf="!meter">
+            <ion-row>
               <ion-col text-center>
                   <ion-button class="round" (click)="goToNavigationPage()">Navigation</ion-button>
               </ion-col>
-          </ion-row>
-          <ion-row style="height: h"></ion-row>
-
-          <div *ngIf="admin == 'admin'">
-            <ion-row>
-                <ion-col text-center>
-                    <ion-button class="round" (click)="goToAddMetersPage()">Add A Meter</ion-button>
-                </ion-col>
             </ion-row>
             <ion-row style="height: h"></ion-row>
           </div>
@@ -40,12 +52,14 @@
           </ion-row>
           <ion-row style="height: h"></ion-row>
 
-          <ion-row>
-            <ion-col text-center>
-              <ion-button class= "round" (click)="goToPayPage()">Pay for Meter</ion-button>
-            </ion-col>
-          </ion-row>
-          <ion-row style="height: h"></ion-row>
+          <div *ngIf="admin == 'admin'">
+            <ion-row>
+                <ion-col text-center>
+                    <ion-button class="round" color="warning" (click)="goToAddMetersPage()">Admin: Add A Meter</ion-button>
+                </ion-col>
+            </ion-row>
+            <ion-row style="height: h"></ion-row>
+          </div>
 
           <br /><br />
           <img src="../assets/img/Translucent.png" id="Car_Icon" height="140" width="60">

@@ -4,8 +4,9 @@ import { AuthenticationService } from '../services/authentication.service';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AlertController, } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, range } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-pay-meter',
@@ -19,8 +20,15 @@ export class PayMeterPage implements OnInit {
   meterKey: any;
   public interval: any;
   getMeter: any;
+  date: any;
+  startTime: any;
+  endTime: any;
+  remMins: any;
+  remSecs:any;
+  cost: any;
 
   constructor(
+    private navCtrl: NavController,
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthenticationService,
@@ -35,12 +43,15 @@ export class PayMeterPage implements OnInit {
     }
 
   ngOnInit() {
+    
     var obj = "/meters/" + this.meterName
     if (!this.meterName) {
       this.router.navigate(['navigation'])
     }
 
-    // this.patientPics$ =
+    this.endTime = [0,0,0,0]
+    this.cost = ['0','0','0','0']
+    
     this.getMeter = this.afDatabase.list("/meters").snapshotChanges()
       .pipe(
         map(actions => {
@@ -66,6 +77,32 @@ export class PayMeterPage implements OnInit {
               list.update(this.meterKey, { purchaseStatus: 0, timeRemaining: 0});
             }
           }
+        }
+
+        this.date = new Date();
+        this.remMins = Math.round(parseInt(this.meter.timeRemaining) / 60);
+        var hours = this.date.getHours()
+        if (hours > 12) {
+          this.startTime = ('0' + (this.date.getHours()-12)).slice(-2) + ":" + ('0' + (this.date.getMinutes())).slice(-2) + " pm"
+        } else {
+          this.startTime = ('0' + (this.date.getHours())).slice(-2) + ":" + ('0' + (this.date.getMinutes())).slice(-2) + " am"
+        }
+        
+
+        for (let i = 0; i < 4; i++) {
+          var seconds = 15 * 60 * (i+1)
+          this.date.setSeconds(this.date.getSeconds() + seconds)
+          hours = this.date.getHours()
+          if (hours > 12) {
+            this.endTime[i] = ('0' + (this.date.getHours()-12)).slice(-2) + ":" + ('0' + (this.date.getMinutes())).slice(-2) + " pm"
+          } else {
+            this.endTime[i] = ('0' + (this.date.getHours())).slice(-2) + ":" + ('0' + (this.date.getMinutes())).slice(-2) + " am"
+          }
+          this.date = new Date();
+        }
+
+        for (let i = 0; i < 4; i++) {
+          this.cost[i] = (this.meter.cost * (i+1)).toFixed(2)
         }
       })
 
@@ -97,13 +134,13 @@ export class PayMeterPage implements OnInit {
     this.present = 1
     const alert = await this.alertController.create({
       header: 'Meter Empty',
-      subHeader: 'You have left the meter near: ' + this.meter.address,
-      message: 'We have reset your time, if this is a mistake contact support',
+      subHeader: 'You are not at this parking meter: ' + this.meter.address,
+      message: 'Please park close to the meter and try again.',
       buttons: [
         {
           text: "Ok",
           handler: data => {
-            this.router.navigate(['navigation'])
+            this.navCtrl.back()
           }
         }
         // ,
@@ -124,24 +161,38 @@ export class PayMeterPage implements OnInit {
    */
   async displayChoice(selected) {
     var textToDisplay
+    var cost = this.meter.cost / 15
+    var startTime = this.startTime
+    var endTime
     if (selected == 'fifteen') {
       textToDisplay = '15 minutes'
+      cost = cost * 15
+      endTime = this.endTime[0]
     } else if (selected == 'thirty') {
       textToDisplay = '30 minutes'
+      cost = cost * 30
+      endTime = this.endTime[1]
     } else if (selected == 'fortyfive') {
       textToDisplay = '45 minutes'
+      cost = cost * 45
+      endTime = this.endTime[2]
     } else {
       textToDisplay = '60 minutes'
+      cost = cost * 60
+      endTime = this.endTime[3]
     }
+
+    cost = (Math.round(cost * 100) / 100)
+    var sCost = cost.toFixed(2)
     const alert = await this.alertController.create({
       header: 'Confirm Submission',
-      subHeader: "You have selected to reserve this parking meter for " + textToDisplay + " at a cost of ",
-      message: 'Is this correct?',
+      subHeader: "You have selected to reserve this parking meter for " + textToDisplay + " at a cost of $" + sCost,
+      message: 'Your time will run out at ' + endTime +'. Do you confirm?',
       buttons: [
         {
           text: "Pay Now",
           handler: data => {
-            this.updateFirebase(textToDisplay);
+            this.updateFirebase(textToDisplay, cost, startTime, endTime);
           }
         }, 
         'Cancel'
@@ -156,12 +207,29 @@ export class PayMeterPage implements OnInit {
    * @param timeChosen the amount of time the user selected for parking written as a string
    * e.g. "15 minutes"
    */
-  updateFirebase(timeChosen) {
+  updateFirebase(timeChosen, cost, startTime, endTime) {
     console.log("Updating database")
     var split = timeChosen.split(" ");
-    var num = parseInt(split[0])*60
+    var seconds = parseInt(split[0])*60
     var meters = this.afDatabase.list("/meters/");
-    meters.update(this.meterKey, { purchaseStatus: 1,timeRemaining: num });
+        
+    meters.update(this.meterKey, { 
+                                  purchaseStatus: 1,
+                                  timeRemaining: seconds,
+                                  startTime: startTime,
+                                  endTime: endTime,
+                                  userId: this.authService.userDetails().uid
+    });
+    this.afDatabase.list(this.authService.userDetails().uid+"/transactions").push({
+                                  meterKey: this.meterKey,
+                                  address: this.meter.address,
+                                  startTime: startTime,
+                                  endTime: endTime,
+                                  cost: cost,
+    });
+
+    this.navCtrl.navigateForward('dashboard', { replaceUrl: true })
+    
   }
 
   ngOnDestroy() {

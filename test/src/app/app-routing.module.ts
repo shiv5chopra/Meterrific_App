@@ -44,6 +44,10 @@ const routes: Routes = [
     path: 'pay-meter',
     loadChildren: () => import('./pay-meter/pay-meter.module').then( m => m.PayMeterPageModule)
   },
+  {
+    path: 'meter-status',
+    loadChildren: () => import('./meter-status/meter-status.module').then( m => m.MeterStatusPageModule)
+  },
 
   //{ path: "hihi", loadChildren: './hihi/hihi.module#HihiModule'},
 ];

@@ -3,14 +3,15 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title class="ion-text-center">Navigate To Destination</ion-title>
+    <ion-title class="ion-title">Navigation</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-input clear-input = true placeholder="Enter Destination" [(ngModel)]="dest"></ion-input>
+
+  <ion-input clear-input = true placeholder="Enter Destination or Select Marker" [(ngModel)]="dest"></ion-input>
   <ion-button class="button" (click) ="setDestination(dest)">submit</ion-button>
-  <ion-button class="button" (click) ="sendNavAlert()">Pay for Meter</ion-button>
+  <!-- <ion-button class="button" (click) ="sendNavAlert()">Pay for Meter</ion-button> -->
   <ion-row style="height: 10px"></ion-row>
   
   <ion-card>
